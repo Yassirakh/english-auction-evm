@@ -1,0 +1,45 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.8;
+
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+
+contract MutantsNft is ERC721URIStorage {
+	event NftMinted(address indexed minter, uint256 indexed tokenId);
+	// string public constant TOKEN_URI_PREFIX =
+	// 	"";
+
+	uint256 private tokenCounter;
+	uint256 private supply = 25;
+
+	constructor() ERC721("Mutant", "MUT") {
+		tokenCounter = 1;
+	}
+
+	function mintNft() public {
+		require(tokenCounter < supply + 1, "SoldOut");
+		uint256 newItemId = tokenCounter;
+		tokenCounter = tokenCounter + 1;
+		_safeMint(msg.sender, newItemId);
+		// _setTokenUri(newItemId, string.concat(TOKEN_URI_PREFIX, Strings.toString(newItemId), '.json'));
+		_setTokenURI(
+			newItemId,
+			string.concat(Strings.toString(newItemId), ".json")
+		);
+		emit NftMinted(msg.sender, newItemId);
+	}
+
+	function _baseURI() internal pure override returns (string memory) {
+		return
+			"https://scarlet-far-urial-455.mypinata.cloud/ipfs/QmdTwTjtYxFHHio8NuP6nZPBfqZ1UvB46jMseyhUniPiEe/";
+	}
+
+	function getTokenCounter() public view returns (uint256) {
+		return tokenCounter;
+	}
+
+	function getSupply() public view returns (uint256) {
+		return supply;
+	}
+}
