@@ -40,15 +40,14 @@ contract Auction is Ownable, ReentrancyGuard {
 		uint purchaseAmount
 	);
 
+	event WithdrawedProceeds(address indexed withdrawer, uint amount);
+
 	struct Auction {
 		address seller;
 		uint deadline;
 		uint reservePrice;
 		uint startingPrice;
 		uint startingTime;
-		bool ended;
-		address buyer;
-		uint soldPrice;
 	}
 
 	address[] public supportedCollections;
@@ -130,9 +129,6 @@ contract Auction is Ownable, ReentrancyGuard {
 		newAuction.reservePrice = _reservePrice;
 		newAuction.deadline = _deadline;
 		newAuction.startingTime = block.timestamp;
-		newAuction.ended = false;
-		newAuction.buyer = address(0);
-		newAuction.soldPrice = 0;
 
 		emit AuctionCreated(
 			msg.sender,
@@ -147,9 +143,11 @@ contract Auction is Ownable, ReentrancyGuard {
 		uint _startingPrice,
 		uint _reservePrice,
 		uint _startingTime
-	) internal view returns (uint) {
-		uint newPrice = (((block.timestamp - _startingTime) /
-			discountSecondsTimeout) * (discoutRate / 100)) * _startingPrice;
+	) public view returns (uint) {
+		uint newPrice = _startingPrice -
+			((((block.timestamp - _startingTime) / discountSecondsTimeout) *
+				(discoutRate / 100)) * _startingPrice);
+
 		if (newPrice < _reservePrice) {
 			return _reservePrice;
 		} else {
@@ -166,10 +164,6 @@ contract Auction is Ownable, ReentrancyGuard {
 			revert AuctionAlreadyEnded();
 		}
 
-		if (auction.ended == true) {
-			revert AuctionAlreadyEnded();
-		}
-
 		uint currentPrice = getPrice(
 			auction.startingPrice,
 			auction.reservePrice,
@@ -179,10 +173,6 @@ contract Auction is Ownable, ReentrancyGuard {
 		if (msg.value < currentPrice) {
 			revert NotEnoughFundsSent();
 		}
-
-		auction.buyer = msg.sender;
-		auction.ended = true;
-		auction.soldPrice = currentPrice;
 
 		IERC721 nft = IERC721(_collectionAddress);
 		nft.transferFrom(auction.seller, msg.sender, _tokenId);
@@ -204,9 +194,24 @@ contract Auction is Ownable, ReentrancyGuard {
 		if (proceeds[msg.sender] < _widthrawAmount) {
 			revert NotEnoughFundsToWidthraw();
 		}
-
 		proceeds[msg.sender] -= _widthrawAmount;
-		(bool success, ) = address(this).call{ value: _widthrawAmount }("");
+
+		(bool success, ) = address(msg.sender).call{ value: _widthrawAmount }(
+			""
+		);
 		require(success, "Error occurred while withdrawing");
+		emit WithdrawedProceeds(msg.sender, _widthrawAmount);
+	}
+
+	function getAddressProceeds(address _address) public view returns (uint) {
+		return proceeds[_address];
+	}
+
+	function getAuction(
+		address _collectionAddress,
+		uint _tokenId
+	) public view returns (Auction memory auction) {
+		auction = auctions[_collectionAddress][_tokenId];
+		return auction;
 	}
 }
