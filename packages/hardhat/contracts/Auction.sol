@@ -6,6 +6,7 @@ import "hardhat/console.sol";
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 error NotOwner();
@@ -20,14 +21,14 @@ error NotEnoughFundsSent();
 error NotEnoughFundsToWidthraw();
 
 contract Auction is Ownable, ReentrancyGuard {
-	/*TODO:
-		Add to the seller the possibility to withdraw the nft if no one purchased after the deadline endded
-	*/
 	event AuctionCreated(
 		address indexed seller,
 		address indexed collectionAddress,
 		uint indexed tokenId,
+		string tokenUri,
 		uint deadline,
+		uint startingTime,
+		uint startingPrice,
 		uint reservePrice
 	);
 
@@ -35,8 +36,10 @@ contract Auction is Ownable, ReentrancyGuard {
 		address indexed bidder,
 		address indexed collectionAddress,
 		address indexed seller,
+		string tokenUri,
 		uint tokenId,
 		uint time,
+		uint deadline,
 		uint purchaseAmount
 	);
 
@@ -117,8 +120,11 @@ contract Auction is Ownable, ReentrancyGuard {
 			revert DeadlineIsInvalid();
 		}
 
-		IERC721 nft = IERC721(_collectionAddress);
-		if (nft.getApproved(_tokenId) != address(this)) {
+		ERC721URIStorage nft = ERC721URIStorage(_collectionAddress);
+		if (
+			ERC721URIStorage(_collectionAddress).getApproved(_tokenId) !=
+			address(this)
+		) {
 			revert MissingApproval();
 		}
 
@@ -130,23 +136,29 @@ contract Auction is Ownable, ReentrancyGuard {
 		newAuction.deadline = _deadline;
 		newAuction.startingTime = block.timestamp;
 
+		string memory tokenURI = nft.tokenURI(_tokenId);
+
 		emit AuctionCreated(
 			msg.sender,
 			_collectionAddress,
 			_tokenId,
-			_deadline,
-			_reservePrice
+			tokenURI,
+			newAuction.deadline,
+			newAuction.startingTime,
+			newAuction.startingPrice,
+			newAuction.reservePrice
 		);
 	}
 
 	function getPrice(
-		uint _startingPrice,
-		uint _reservePrice,
-		uint _startingTime
-	) public view returns (uint) {
-		uint newPrice = _startingPrice -
+		uint256 _startingPrice,
+		uint256 _reservePrice,
+		uint256 _startingTime
+	) public view returns (uint256) {
+		uint256 newPrice = _startingPrice -
 			((((block.timestamp - _startingTime) / discountSecondsTimeout) *
-				(discoutRate / 100)) * _startingPrice);
+				(discoutRate) *
+				_startingPrice) / 100);
 
 		if (newPrice < _reservePrice) {
 			return _reservePrice;
@@ -164,7 +176,7 @@ contract Auction is Ownable, ReentrancyGuard {
 			revert AuctionAlreadyEnded();
 		}
 
-		uint currentPrice = getPrice(
+		uint256 currentPrice = getPrice(
 			auction.startingPrice,
 			auction.reservePrice,
 			auction.startingTime
@@ -174,33 +186,38 @@ contract Auction is Ownable, ReentrancyGuard {
 			revert NotEnoughFundsSent();
 		}
 
-		IERC721 nft = IERC721(_collectionAddress);
+		ERC721URIStorage nft = ERC721URIStorage(_collectionAddress);
 		nft.transferFrom(auction.seller, msg.sender, _tokenId);
 		proceeds[auction.seller] += currentPrice;
 
-		delete auctions[_collectionAddress][_tokenId];
+		string memory tokenURI = nft.tokenURI(_tokenId);
 
 		emit ItemPurchased(
 			msg.sender,
 			_collectionAddress,
 			auction.seller,
+			tokenURI,
 			_tokenId,
 			block.timestamp,
+			auction.deadline,
 			currentPrice
 		);
+
+		delete auctions[_collectionAddress][_tokenId];
 	}
 
-	function withdrawProceeds(uint _widthrawAmount) external nonReentrant {
-		if (proceeds[msg.sender] < _widthrawAmount) {
+	function withdrawProceeds() external nonReentrant {
+		if (proceeds[msg.sender] <= 0) {
 			revert NotEnoughFundsToWidthraw();
 		}
-		proceeds[msg.sender] -= _widthrawAmount;
+		uint proceedsAmount = proceeds[msg.sender];
+		proceeds[msg.sender] = 0;
 
-		(bool success, ) = address(msg.sender).call{ value: _widthrawAmount }(
+		(bool success, ) = address(msg.sender).call{ value: proceedsAmount }(
 			""
 		);
 		require(success, "Error occurred while withdrawing");
-		emit WithdrawedProceeds(msg.sender, _widthrawAmount);
+		emit WithdrawedProceeds(msg.sender, proceedsAmount);
 	}
 
 	function getAddressProceeds(address _address) public view returns (uint) {
@@ -213,5 +230,21 @@ contract Auction is Ownable, ReentrancyGuard {
 	) public view returns (Auction memory auction) {
 		auction = auctions[_collectionAddress][_tokenId];
 		return auction;
+	}
+
+	function getSupportedCollections() public view returns (address[] memory) {
+		return supportedCollections;
+	}
+
+	function getTokensUris(
+		address _collectionAddress,
+		uint[] memory _tokenIds
+	) public view returns (string[] memory) {
+		ERC721URIStorage collection = ERC721URIStorage(_collectionAddress);
+		string[] memory tokensUris = new string[](_tokenIds.length);
+		for (uint i = 0; i < _tokenIds.length; i++) {
+			tokensUris[i] = collection.tokenURI(_tokenIds[i]);
+		}
+		return tokensUris;
 	}
 }

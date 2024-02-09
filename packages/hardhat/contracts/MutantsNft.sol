@@ -4,11 +4,14 @@ pragma solidity ^0.8.8;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
 contract MutantsNft is ERC721URIStorage {
-	event NftMinted(address indexed minter, uint256 indexed tokenId);
-	// string public constant TOKEN_URI_PREFIX =
-	// 	"";
+	event NftMinted(
+		address indexed minter,
+		uint256 indexed tokenId,
+		string tokenUri
+	);
 
 	uint256 private tokenCounter;
 	uint256 private supply = 25;
@@ -27,7 +30,11 @@ contract MutantsNft is ERC721URIStorage {
 			newItemId,
 			string.concat(Strings.toString(newItemId), ".json")
 		);
-		emit NftMinted(msg.sender, newItemId);
+		emit NftMinted(
+			msg.sender,
+			newItemId,
+			string.concat(_baseURI(), Strings.toString(newItemId), ".json")
+		);
 	}
 
 	function _baseURI() internal pure override returns (string memory) {
@@ -41,5 +48,15 @@ contract MutantsNft is ERC721URIStorage {
 
 	function getSupply() public view returns (uint256) {
 		return supply;
+	}
+
+	function getTokenOwners(
+		uint256[] memory tokenIds
+	) public view returns (address[] memory) {
+		address[] memory tokensToOwners = new address[](tokenIds.length);
+		for (uint i = 0; i < tokenIds.length; i++) {
+			tokensToOwners[i] = ERC721._ownerOf(tokenIds[i]);
+		}
+		return tokensToOwners;
 	}
 }

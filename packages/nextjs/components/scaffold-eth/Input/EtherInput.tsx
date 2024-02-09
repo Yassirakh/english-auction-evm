@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { ArrowsRightLeftIcon } from "@heroicons/react/24/outline";
+// import { ArrowsRightLeftIcon } from "@heroicons/react/24/outline";
 import { CommonInputProps, InputBase, SIGNED_NUMBER_REGEX } from "~~/components/scaffold-eth";
 import { useGlobalState } from "~~/services/store/store";
 
@@ -99,11 +99,11 @@ export const EtherInput = ({
     onChange(newEthValue);
   };
 
-  const toggleMode = () => {
-    if (nativeCurrencyPrice > 0) {
-      setInternalUSDMode(!internalUsdMode);
-    }
-  };
+  // const toggleMode = () => {
+  //   if (nativeCurrencyPrice > 0) {
+  //     setInternalUSDMode(!internalUsdMode);
+  //   }
+  // };
 
   return (
     <InputBase
@@ -122,13 +122,13 @@ export const EtherInput = ({
           }`}
           data-tip="Unable to fetch price"
         >
-          <button
+          {/* <button
             className="btn btn-primary h-[2.2rem] min-h-[2.2rem]"
             onClick={toggleMode}
             disabled={!internalUsdMode && !nativeCurrencyPrice}
           >
             <ArrowsRightLeftIcon className="h-3 w-3 cursor-pointer" aria-hidden="true" />
-          </button>
+          </button> */}
         </div>
       }
     />
