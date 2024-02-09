@@ -28,29 +28,9 @@ import scaffoldConfig from "~~/scaffold.config";
 
 // @ts-nocheck
 
-// @ts-nocheck
-
-// @ts-nocheck
-
-// @ts-nocheck
-
-// @ts-nocheck
-
-// @ts-nocheck
-
-// @ts-nocheck
-
-// @ts-nocheck
-
-// @ts-nocheck
-
-// @ts-nocheck
-
-// @ts-nocheck
-
 const AuctionsListing = () => {
   const [blockTimestamp, setBlockTimestamp] = useState<number>(0);
-  const web3 = new Web3("http://127.0.0.1:8545");
+  const web3 = new Web3(process.env.NEXT_PUBLIC_BLOCK_CONFIRMATIONS);
   web3.eth.getBlock("latest").then(async block => {
     setBlockTimestamp(Number(block.timestamp));
   });
