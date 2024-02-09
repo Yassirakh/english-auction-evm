@@ -102,10 +102,8 @@ const CreateAuction = () => {
           jsonRes["tokenId"] = eventsArgs[indice].tokenId;
           jsonRes["collectionAddress"] = mutantsNftContract.data?.address;
           uris.push(jsonRes);
-          console.log(eventsArgs);
         });
         setTokensUris(uris);
-        console.log(tokensUris);
       });
     }
   }, [tokensOwners]);
