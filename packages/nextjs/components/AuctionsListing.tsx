@@ -69,6 +69,26 @@ import scaffoldConfig from "~~/scaffold.config";
 
 // @ts-nocheck
 
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
 const AuctionsListing = () => {
   const [blockTimestamp, setBlockTimestamp] = useState<number>(0);
   const [activeAuctions, setActiveAuctions] = useState<[any]>([]);
@@ -105,27 +125,28 @@ const AuctionsListing = () => {
     const activeAuctionsArray = [];
     const endedAuctionsArray = [];
     const currentTimestamp = Math.floor(new Date().getTime() / 1000);
-    for (let i = 0; i < (eventCreatedAuction?.length ? eventCreatedAuction?.length : 0); i++) {
-      let isActive = true;
-      for (let j = 0; j < (eventItemPurchased?.length ? eventItemPurchased?.length : 0); j++) {
-        if (
-          eventCreatedAuction[i].args.collectionAddress == eventItemPurchased[j].args.collectionAddress &&
-          eventCreatedAuction[i].args.tokenId == eventItemPurchased[j].args.tokenId &&
-          eventCreatedAuction[i].args.deadline == eventItemPurchased[j].args.deadline
-        ) {
-          isActive = false;
-          endedAuctionsArray.push(eventItemPurchased[j].args);
+    if (isLoadingEventCreatedAuction == false && isLoadingEventItemPurchased == false) {
+      console.log(eventCreatedAuction);
+      console.log(eventItemPurchased);
+      for (let i = 0; i < (eventCreatedAuction?.length ? eventCreatedAuction?.length : 0); i++) {
+        let isActive = true;
+        for (let j = 0; j < (eventItemPurchased?.length ? eventItemPurchased?.length : 0); j++) {
+          if (eventCreatedAuction[i].args.auctionId == eventItemPurchased[j].args.auctionId) {
+            isActive = false;
+            endedAuctionsArray.push(eventItemPurchased[j].args);
+            console.log(eventItemPurchased[j].args);
+          }
+        }
+        if (eventCreatedAuction[i].args.deadline < currentTimestamp && isActive) {
+          endedAuctionsArray.push(eventCreatedAuction[i].args);
+        } else if (isActive) {
+          activeAuctionsArray.push(eventCreatedAuction[i].args);
         }
       }
-      if (eventCreatedAuction[i].args.deadline < currentTimestamp && isActive) {
-        endedAuctionsArray.push(eventCreatedAuction[i].args);
-      } else if (isActive) {
-        activeAuctionsArray.push(eventCreatedAuction[i].args);
+      if (activeAuctionsArray.length > 0 || endedAuctionsArray.length > 0) {
+        setActiveAuctions(activeAuctionsArray);
+        setEndedAuctions(endedAuctionsArray);
       }
-    }
-    if (activeAuctionsArray.length || endedAuctionsArray.length) {
-      setActiveAuctions(activeAuctionsArray);
-      setEndedAuctions(endedAuctionsArray);
     }
   }, [blockTimestamp, eventCreatedAuction, eventItemPurchased]);
 

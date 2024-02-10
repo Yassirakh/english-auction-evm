@@ -29,7 +29,8 @@ contract Auction is Ownable, ReentrancyGuard {
 		uint deadline,
 		uint startingTime,
 		uint startingPrice,
-		uint reservePrice
+		uint reservePrice,
+		uint auctionId
 	);
 
 	event ItemPurchased(
@@ -40,12 +41,14 @@ contract Auction is Ownable, ReentrancyGuard {
 		uint tokenId,
 		uint time,
 		uint deadline,
-		uint purchaseAmount
+		uint purchaseAmount,
+		uint auctionId
 	);
 
 	event WithdrawedProceeds(address indexed withdrawer, uint amount);
 
 	struct Auction {
+		uint auctionId;
 		address seller;
 		uint deadline;
 		uint reservePrice;
@@ -58,6 +61,7 @@ contract Auction is Ownable, ReentrancyGuard {
 	mapping(address => uint) private proceeds;
 	uint discoutRate = 5;
 	uint discountSecondsTimeout = 300;
+	uint auctionCounter = 1;
 
 	modifier notAuctioned(address collectionAddress, uint tokenId) {
 		if (auctions[collectionAddress][tokenId].reservePrice > 0) {
@@ -130,11 +134,14 @@ contract Auction is Ownable, ReentrancyGuard {
 
 		Auction storage newAuction = auctions[_collectionAddress][_tokenId];
 
+		newAuction.auctionId = auctionCounter;
 		newAuction.seller = msg.sender;
 		newAuction.startingPrice = _startingPrice;
 		newAuction.reservePrice = _reservePrice;
 		newAuction.deadline = _deadline;
 		newAuction.startingTime = block.timestamp;
+
+		auctionCounter++;
 
 		string memory tokenURI = nft.tokenURI(_tokenId);
 
@@ -146,7 +153,8 @@ contract Auction is Ownable, ReentrancyGuard {
 			newAuction.deadline,
 			newAuction.startingTime,
 			newAuction.startingPrice,
-			newAuction.reservePrice
+			newAuction.reservePrice,
+			newAuction.auctionId
 		);
 	}
 
@@ -200,7 +208,8 @@ contract Auction is Ownable, ReentrancyGuard {
 			_tokenId,
 			block.timestamp,
 			auction.deadline,
-			currentPrice
+			currentPrice,
+			auction.auctionId
 		);
 
 		delete auctions[_collectionAddress][_tokenId];
