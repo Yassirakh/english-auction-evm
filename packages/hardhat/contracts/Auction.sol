@@ -163,10 +163,16 @@ contract Auction is Ownable, ReentrancyGuard {
 		uint256 _reservePrice,
 		uint256 _startingTime
 	) public view returns (uint256) {
-		uint256 newPrice = _startingPrice -
-			((((block.timestamp - _startingTime) / discountSecondsTimeout) *
-				(discoutRate) *
-				_startingPrice) / 100);
+		uint256 amountToReduce = (((block.timestamp - _startingTime) /
+			discountSecondsTimeout) *
+			(discoutRate) *
+			_startingPrice) / 100;
+
+		if (amountToReduce > _startingPrice) {
+			return _reservePrice;
+		}
+
+		uint256 newPrice = _startingPrice - amountToReduce;
 
 		if (newPrice < _reservePrice) {
 			return _reservePrice;

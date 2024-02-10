@@ -170,6 +170,12 @@ const deployedContracts = {
               name: "reservePrice",
               type: "uint256",
             },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "auctionId",
+              type: "uint256",
+            },
           ],
           name: "AuctionCreated",
           type: "event",
@@ -223,6 +229,12 @@ const deployedContracts = {
               indexed: false,
               internalType: "uint256",
               name: "purchaseAmount",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "auctionId",
               type: "uint256",
             },
           ],
@@ -336,6 +348,11 @@ const deployedContracts = {
           outputs: [
             {
               components: [
+                {
+                  internalType: "uint256",
+                  name: "auctionId",
+                  type: "uint256",
+                },
                 {
                   internalType: "address",
                   name: "seller",
@@ -1102,7 +1119,7 @@ const deployedContracts = {
   },
   11155111: {
     Auction: {
-      address: "0xF87dB408ae3612497F51d87ad0846da9EBf270A8",
+      address: "0xc323a323d13a9fb4E9725672E217a50d20838627",
       abi: [
         {
           inputs: [
