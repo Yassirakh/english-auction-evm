@@ -1,9 +1,10 @@
 // @ts-nocheck
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AuctionCard from "./AuctionCard";
 import { Loading } from "@web3uikit/core";
+import { mainnet } from "wagmi";
 import Web3 from "web3";
 import { useScaffoldEventHistory } from "~~/hooks/scaffold-eth";
 import scaffoldConfig from "~~/scaffold.config";
@@ -28,9 +29,91 @@ import scaffoldConfig from "~~/scaffold.config";
 
 // @ts-nocheck
 
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
+// @ts-nocheck
+
 const AuctionsListing = () => {
   const [blockTimestamp, setBlockTimestamp] = useState<number>(0);
-  const web3 = new Web3(process.env.NEXT_PUBLIC_BLOCK_CONFIRMATIONS);
+  const [activeAuctions, setActiveAuctions] = useState<[any]>([]);
+  const [endedAuctions, setEndedAuctions] = useState<[any]>([]);
+  const web3 = new Web3(`${mainnet.rpcUrls.alchemy.http[0]}/${scaffoldConfig.alchemyApiKey}`);
   web3.eth.getBlock("latest").then(async block => {
     setBlockTimestamp(Number(block.timestamp));
   });
@@ -57,29 +140,32 @@ const AuctionsListing = () => {
     watch: false,
   });
 
-  const activeAuctions = [];
-  const endedAuctions = [];
   // const currentTimestamp = Math.ceil(new Date().getTime() / 1000) + 2520;
-
-  const currentTimestamp = Math.floor(new Date().getTime() / 1000);
-  for (let i = 0; i < (eventCreatedAuction?.length ? eventCreatedAuction?.length : 0); i++) {
-    let isActive = true;
-    for (let j = 0; j < (eventItemPurchased?.length ? eventItemPurchased?.length : 0); j++) {
-      if (
-        eventCreatedAuction[i].args.collectionAddress == eventItemPurchased[j].args.collectionAddress &&
-        eventCreatedAuction[i].args.tokenId == eventItemPurchased[j].args.tokenId &&
-        eventCreatedAuction[i].args.deadline == eventItemPurchased[j].args.deadline
-      ) {
-        isActive = false;
-        endedAuctions.push(eventItemPurchased[j].args);
+  useEffect(() => {
+    const activeAuctionsArray = [];
+    const endedAuctionsArray = [];
+    const currentTimestamp = Math.floor(new Date().getTime() / 1000);
+    if (isLoadingEventCreatedAuction == false && isLoadingEventItemPurchased == false) {
+      for (let i = 0; i < (eventCreatedAuction?.length ? eventCreatedAuction?.length : 0); i++) {
+        let isActive = true;
+        for (let j = 0; j < (eventItemPurchased?.length ? eventItemPurchased?.length : 0); j++) {
+          if (eventCreatedAuction[i].args.auctionId == eventItemPurchased[j].args.auctionId) {
+            isActive = false;
+            endedAuctionsArray.push(eventItemPurchased[j].args);
+          }
+        }
+        if (eventCreatedAuction[i].args.deadline < currentTimestamp && isActive) {
+          endedAuctionsArray.push(eventCreatedAuction[i].args);
+        } else if (isActive) {
+          activeAuctionsArray.push(eventCreatedAuction[i].args);
+        }
+      }
+      if (activeAuctionsArray.length > 0 || endedAuctionsArray.length > 0) {
+        setActiveAuctions(activeAuctionsArray);
+        setEndedAuctions(endedAuctionsArray);
       }
     }
-    if (eventCreatedAuction[i].args.deadline < currentTimestamp && isActive) {
-      endedAuctions.push(eventCreatedAuction[i].args);
-    } else if (isActive) {
-      activeAuctions.push(eventCreatedAuction[i].args);
-    }
-  }
+  }, [blockTimestamp, eventCreatedAuction, eventItemPurchased]);
 
   return (
     <>

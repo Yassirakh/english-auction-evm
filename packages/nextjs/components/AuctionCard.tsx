@@ -119,10 +119,10 @@ const AuctionCard = (props: any) => {
                       <div className="flex justify-between">
                         <span>Price drops in :</span>
                         {!auctionEnded ? (
-                          price >= Number(auctionData.reservePrice) ? (
+                          price > Number(auctionData.reservePrice) ? (
                             <Countdown date={Date.now() + refreshTimeout * 1000} renderer={countdownRenderer} />
                           ) : (
-                            <span>Reserve price reached</span>
+                            <span>Reserve reached</span>
                           )
                         ) : (
                           <span>Auction Ended</span>

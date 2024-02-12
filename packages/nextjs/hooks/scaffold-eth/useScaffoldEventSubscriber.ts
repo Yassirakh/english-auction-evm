@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useTargetNetwork } from "./useTargetNetwork";
 import { Abi, ExtractAbiEventNames } from "abitype";
 import { Log } from "viem";

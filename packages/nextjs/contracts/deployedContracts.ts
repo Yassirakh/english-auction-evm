@@ -170,6 +170,12 @@ const deployedContracts = {
               name: "reservePrice",
               type: "uint256",
             },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "auctionId",
+              type: "uint256",
+            },
           ],
           name: "AuctionCreated",
           type: "event",
@@ -223,6 +229,12 @@ const deployedContracts = {
               indexed: false,
               internalType: "uint256",
               name: "purchaseAmount",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "auctionId",
               type: "uint256",
             },
           ],
@@ -336,6 +348,11 @@ const deployedContracts = {
           outputs: [
             {
               components: [
+                {
+                  internalType: "uint256",
+                  name: "auctionId",
+                  type: "uint256",
+                },
                 {
                   internalType: "address",
                   name: "seller",
@@ -535,6 +552,1118 @@ const deployedContracts = {
     },
     MutantsNft: {
       address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      abi: [
+        {
+          inputs: [],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "sender",
+              type: "address",
+            },
+            {
+              internalType: "uint256",
+              name: "tokenId",
+              type: "uint256",
+            },
+            {
+              internalType: "address",
+              name: "owner",
+              type: "address",
+            },
+          ],
+          name: "ERC721IncorrectOwner",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "operator",
+              type: "address",
+            },
+            {
+              internalType: "uint256",
+              name: "tokenId",
+              type: "uint256",
+            },
+          ],
+          name: "ERC721InsufficientApproval",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "approver",
+              type: "address",
+            },
+          ],
+          name: "ERC721InvalidApprover",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "operator",
+              type: "address",
+            },
+          ],
+          name: "ERC721InvalidOperator",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "owner",
+              type: "address",
+            },
+          ],
+          name: "ERC721InvalidOwner",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "receiver",
+              type: "address",
+            },
+          ],
+          name: "ERC721InvalidReceiver",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "sender",
+              type: "address",
+            },
+          ],
+          name: "ERC721InvalidSender",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "tokenId",
+              type: "uint256",
+            },
+          ],
+          name: "ERC721NonexistentToken",
+          type: "error",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "owner",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "approved",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "tokenId",
+              type: "uint256",
+            },
+          ],
+          name: "Approval",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "owner",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "operator",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "bool",
+              name: "approved",
+              type: "bool",
+            },
+          ],
+          name: "ApprovalForAll",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "_fromTokenId",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "_toTokenId",
+              type: "uint256",
+            },
+          ],
+          name: "BatchMetadataUpdate",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "_tokenId",
+              type: "uint256",
+            },
+          ],
+          name: "MetadataUpdate",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "minter",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "tokenId",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "tokenUri",
+              type: "string",
+            },
+          ],
+          name: "NftMinted",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "from",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "to",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "tokenId",
+              type: "uint256",
+            },
+          ],
+          name: "Transfer",
+          type: "event",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "to",
+              type: "address",
+            },
+            {
+              internalType: "uint256",
+              name: "tokenId",
+              type: "uint256",
+            },
+          ],
+          name: "approve",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "owner",
+              type: "address",
+            },
+          ],
+          name: "balanceOf",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "tokenId",
+              type: "uint256",
+            },
+          ],
+          name: "getApproved",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getSupply",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getTokenCounter",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256[]",
+              name: "tokenIds",
+              type: "uint256[]",
+            },
+          ],
+          name: "getTokenOwners",
+          outputs: [
+            {
+              internalType: "address[]",
+              name: "",
+              type: "address[]",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "owner",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "operator",
+              type: "address",
+            },
+          ],
+          name: "isApprovedForAll",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "mintNft",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "name",
+          outputs: [
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "tokenId",
+              type: "uint256",
+            },
+          ],
+          name: "ownerOf",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "from",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "to",
+              type: "address",
+            },
+            {
+              internalType: "uint256",
+              name: "tokenId",
+              type: "uint256",
+            },
+          ],
+          name: "safeTransferFrom",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "from",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "to",
+              type: "address",
+            },
+            {
+              internalType: "uint256",
+              name: "tokenId",
+              type: "uint256",
+            },
+            {
+              internalType: "bytes",
+              name: "data",
+              type: "bytes",
+            },
+          ],
+          name: "safeTransferFrom",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "operator",
+              type: "address",
+            },
+            {
+              internalType: "bool",
+              name: "approved",
+              type: "bool",
+            },
+          ],
+          name: "setApprovalForAll",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "bytes4",
+              name: "interfaceId",
+              type: "bytes4",
+            },
+          ],
+          name: "supportsInterface",
+          outputs: [
+            {
+              internalType: "bool",
+              name: "",
+              type: "bool",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "symbol",
+          outputs: [
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "tokenId",
+              type: "uint256",
+            },
+          ],
+          name: "tokenURI",
+          outputs: [
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "from",
+              type: "address",
+            },
+            {
+              internalType: "address",
+              name: "to",
+              type: "address",
+            },
+            {
+              internalType: "uint256",
+              name: "tokenId",
+              type: "uint256",
+            },
+          ],
+          name: "transferFrom",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+      ],
+      inheritedFunctions: {
+        approve: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        balanceOf: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        getApproved: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        isApprovedForAll: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        name: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        ownerOf: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        safeTransferFrom: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        setApprovalForAll: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        supportsInterface: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        symbol: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        tokenURI: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        transferFrom: "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+      },
+    },
+  },
+  11155111: {
+    Auction: {
+      address: "0xc323a323d13a9fb4E9725672E217a50d20838627",
+      abi: [
+        {
+          inputs: [
+            {
+              internalType: "address[]",
+              name: "_supportedCollections",
+              type: "address[]",
+            },
+          ],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "collectionAddress",
+              type: "address",
+            },
+            {
+              internalType: "uint256",
+              name: "tokenId",
+              type: "uint256",
+            },
+          ],
+          name: "AlreadyAuctioned",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "AuctionAlreadyEnded",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "DeadlineIsInvalid",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "MissingApproval",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "collectionAddress",
+              type: "address",
+            },
+            {
+              internalType: "uint256",
+              name: "tokenId",
+              type: "uint256",
+            },
+          ],
+          name: "NotAuctioned",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "NotEnoughFundsSent",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "NotEnoughFundsToWidthraw",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "NotOwner",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "owner",
+              type: "address",
+            },
+          ],
+          name: "OwnableInvalidOwner",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "account",
+              type: "address",
+            },
+          ],
+          name: "OwnableUnauthorizedAccount",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "ReentrancyGuardReentrantCall",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "ReservePriceMustBePositive",
+          type: "error",
+        },
+        {
+          inputs: [],
+          name: "StartingPriceBelowReservePrice",
+          type: "error",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "seller",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "collectionAddress",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "tokenId",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "tokenUri",
+              type: "string",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "deadline",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "startingTime",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "startingPrice",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "reservePrice",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "auctionId",
+              type: "uint256",
+            },
+          ],
+          name: "AuctionCreated",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "bidder",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "collectionAddress",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "seller",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "tokenUri",
+              type: "string",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "tokenId",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "time",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "deadline",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "purchaseAmount",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "auctionId",
+              type: "uint256",
+            },
+          ],
+          name: "ItemPurchased",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "previousOwner",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "newOwner",
+              type: "address",
+            },
+          ],
+          name: "OwnershipTransferred",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "withdrawer",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "amount",
+              type: "uint256",
+            },
+          ],
+          name: "WithdrawedProceeds",
+          type: "event",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_collectionAddress",
+              type: "address",
+            },
+            {
+              internalType: "uint256",
+              name: "_tokenId",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "_startingPrice",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "_reservePrice",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "_deadline",
+              type: "uint256",
+            },
+          ],
+          name: "createAuction",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_address",
+              type: "address",
+            },
+          ],
+          name: "getAddressProceeds",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_collectionAddress",
+              type: "address",
+            },
+            {
+              internalType: "uint256",
+              name: "_tokenId",
+              type: "uint256",
+            },
+          ],
+          name: "getAuction",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "uint256",
+                  name: "auctionId",
+                  type: "uint256",
+                },
+                {
+                  internalType: "address",
+                  name: "seller",
+                  type: "address",
+                },
+                {
+                  internalType: "uint256",
+                  name: "deadline",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "reservePrice",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "startingPrice",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "startingTime",
+                  type: "uint256",
+                },
+              ],
+              internalType: "struct Auction.Auction",
+              name: "auction",
+              type: "tuple",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "_startingPrice",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "_reservePrice",
+              type: "uint256",
+            },
+            {
+              internalType: "uint256",
+              name: "_startingTime",
+              type: "uint256",
+            },
+          ],
+          name: "getPrice",
+          outputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getSupportedCollections",
+          outputs: [
+            {
+              internalType: "address[]",
+              name: "",
+              type: "address[]",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_collectionAddress",
+              type: "address",
+            },
+            {
+              internalType: "uint256[]",
+              name: "_tokenIds",
+              type: "uint256[]",
+            },
+          ],
+          name: "getTokensUris",
+          outputs: [
+            {
+              internalType: "string[]",
+              name: "",
+              type: "string[]",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "owner",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_collectionAddress",
+              type: "address",
+            },
+            {
+              internalType: "uint256",
+              name: "_tokenId",
+              type: "uint256",
+            },
+          ],
+          name: "purchaseItem",
+          outputs: [],
+          stateMutability: "payable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "renounceOwnership",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          name: "supportedCollections",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "newOwner",
+              type: "address",
+            },
+          ],
+          name: "transferOwnership",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_newSupportedCollection",
+              type: "address",
+            },
+          ],
+          name: "updateSupportedCollections",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "withdrawProceeds",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+      ],
+      inheritedFunctions: {
+        owner: "@openzeppelin/contracts/access/Ownable.sol",
+        renounceOwnership: "@openzeppelin/contracts/access/Ownable.sol",
+        transferOwnership: "@openzeppelin/contracts/access/Ownable.sol",
+      },
+    },
+    MutantsNft: {
+      address: "0xb9ED4e4C4b5E9BcE6C44E264a58324aed5D462aE",
       abi: [
         {
           inputs: [],
