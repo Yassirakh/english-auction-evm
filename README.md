@@ -16,4 +16,5 @@ Each auction has :
 
 After a certain user buys the NFT, the contract transfers the NFT to the buyer, and adds the price that the NFT was purchased for to the proceeds of the seller, then the seller can withdraw his proceeds.
 
-
+> [!NOTE]  
+> The NFT collection art and metadata I used is made by Moralis.
